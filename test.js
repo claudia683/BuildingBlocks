@@ -1,11 +1,16 @@
 var request = require('supertest');
-var app = require('./app')
+var app = require('./app');
+
+var redis = require('redis');
+var client = redis.createClient();
+client.select('test'.length);
+client.flushdb();
 
 describe('Requests to the root path', function(){
 	it('Returns a 200 status code',function(done){
 		request(app)
 			.get('/')
-			.expect(200,done)
+			.expect(200,done);
 	});
 
 	it ('Returns a HTML format',function(done){
@@ -27,7 +32,7 @@ describe ('Listing cities on /cities',function(){
 	it('Returns 200 status code',function(done){
 		request(app)
 			.get('/cities')
-			.expect(200, done)
+			.expect(200, done);
 	});
 
 	it ('Returns JSON format',function(done){
@@ -40,12 +45,17 @@ describe ('Listing cities on /cities',function(){
 	it ('Returns initial cities',function(done){
 		request(app)
 			.get('/cities')
-			.expect(JSON.stringify(['Lotopia', 'Caspiana','Indigo']),done)
+			.expect(JSON.stringify([]),done);
 	});
 
 });
 
 describe ('Creating new cities', function(){
+
+	before(function(){
+
+	});
+
 	it ('Returns a 201 status code', function(done){
 		request(app)
 			.post('/cities')
@@ -57,7 +67,7 @@ describe ('Creating new cities', function(){
 		request(app)
 			.post('/cities')
 			.send('name=Springfield&description=where+the+simpsons+live')
-			.expect(/springfield/i, done)
+			.expect(/springfield/i, done);
 	});
 
 });
